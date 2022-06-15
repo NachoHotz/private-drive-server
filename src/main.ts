@@ -1,15 +1,24 @@
 import { NestFactory } from '@nestjs/core';
+import { Logger, ValidationPipe } from '@nestjs/common';
 import { AppModule } from './app.module';
 import { corsOptions } from './config';
 import helmet from 'helmet';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  const logger = new Logger();
 
   app.use(helmet());
+
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+    }),
+  );
+
   app.enableCors(corsOptions);
 
   await app.listen(3000);
-  console.log(`Server running on ${await app.getUrl()}`);
+  logger.log(`Server running on ${await app.getUrl()}`);
 }
 bootstrap();
