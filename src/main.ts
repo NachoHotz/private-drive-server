@@ -7,7 +7,7 @@ import helmet from 'helmet';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  const logger = new Logger();
+  const logger = new Logger('bootstrap');
 
   app.use(helmet());
 
@@ -49,6 +49,6 @@ async function bootstrap() {
   app.enableCors(corsOptions);
 
   await app.listen(process.env.PORT || 3001);
-  logger.log(`Server running on ${await app.getUrl()}`);
+  logger.log(`Server running on port ${process.env.PORT || 3001}`);
 }
 bootstrap();
