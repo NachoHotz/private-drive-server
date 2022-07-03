@@ -7,7 +7,7 @@ import helmet from 'helmet';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  const logger = new Logger('bootstrap');
+  const logger = new Logger('Bootstrap');
 
   app.use(helmet());
 
@@ -39,7 +39,7 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api-docs', app, document);
 
-  // whitelist any non specified property in request body
+  // whitelist any non-specified property in request body by a DTO
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
