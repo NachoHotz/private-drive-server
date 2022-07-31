@@ -25,7 +25,7 @@ export class FilesController {
   })
   @Post()
   async create(@Body() createFileDto: CreateFileDto) {
-    return await this.filesService.create(createFileDto);
+    return this.filesService.create(createFileDto);
   }
 
   @ApiResponse({ status: 200, description: 'Files found' })
@@ -58,11 +58,11 @@ export class FilesController {
 
   @Put(':id')
   async update(@Param('id') id: string, @Body() updateFileDto: UpdateFileDto) {
-    return await this.filesService.update(+id, updateFileDto);
+    return this.filesService.update(+id, updateFileDto);
   }
 
   @Delete(':id')
   async remove(@Param('id') id: string) {
-    return await this.filesService.remove(+id);
+    return this.filesService.remove(+id);
   }
 }

@@ -25,7 +25,7 @@ export class UsersController {
   })
   @Post()
   async create(@Body() createUserDto: CreateUserDto) {
-    return await this.usersService.register(createUserDto);
+    return this.usersService.register(createUserDto);
   }
 
   @ApiResponse({

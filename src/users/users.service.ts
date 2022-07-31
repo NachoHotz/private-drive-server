@@ -23,18 +23,16 @@ export class UsersService {
 
       if (userExists) {
         throw new BadRequestException(
-          `The user with email ${createUserDto.email} already exists`,
+          `There is already a user registered with the email ${createUserDto.email}`,
         );
       }
 
       const hashedPassword = await bcrypt.hash(createUserDto.password, 12);
 
-      const createdUser = await this.userModel.create({
+      return await this.userModel.create({
         ...createUserDto,
         password: hashedPassword,
       });
-
-      return createdUser;
     } catch (e) {
       throw new InternalServerErrorException(
         `Error creating user: ${e.message}`,
@@ -70,7 +68,7 @@ export class UsersService {
     return `This action returns a #${id} user`;
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
+  update(id: number, _updateUserDto: UpdateUserDto) {
     return `This action updates a #${id} user`;
   }
 

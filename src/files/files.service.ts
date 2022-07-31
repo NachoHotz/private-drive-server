@@ -12,25 +12,25 @@ export class FilesService {
   ) {}
   async create(createFileDto: CreateFileDto) {
     try {
-      return await this.filesModel.create(createFileDto);
+      return this.filesModel.create(createFileDto);
     } catch (error) {
       throw new BadRequestException(error.message);
     }
   }
 
   async findAll() {
-    return await this.filesModel.find();
+    return this.filesModel.find();
   }
 
   async findOne(id: number) {
-    return await this.filesModel.findOne({ _id: id });
+    return this.filesModel.findOne({ _id: id });
   }
 
   async update(id: number, updateFileDto: UpdateFileDto) {
-    return await this.filesModel.findByIdAndUpdate(id, updateFileDto);
+    return this.filesModel.findByIdAndUpdate(id, updateFileDto);
   }
 
   async remove(id: number) {
-    return await this.filesModel.findByIdAndRemove(id);
+    return this.filesModel.findByIdAndRemove(id);
   }
 }
