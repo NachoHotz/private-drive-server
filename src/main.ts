@@ -2,12 +2,13 @@ import { NestFactory } from '@nestjs/core';
 import { Logger, ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
-import { corsOptions } from './config';
+import { corsOptions, envConfig } from './config';
 import helmet from 'helmet';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const logger = new Logger('Bootstrap');
+  const PORT = envConfig().API_PORT;
 
   app.use(helmet());
 
@@ -48,7 +49,7 @@ async function bootstrap() {
 
   app.enableCors(corsOptions);
 
-  await app.listen(process.env.PORT || 3001);
-  logger.log(`Server running on port ${process.env.PORT || 3001}`);
+  await app.listen(PORT || 3001);
+  logger.log(`Server running on port ${PORT || 3001}`);
 }
 bootstrap();

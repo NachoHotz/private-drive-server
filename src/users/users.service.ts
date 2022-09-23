@@ -15,7 +15,7 @@ import { User, UserDocument } from './schemas/user.schema';
 export class UsersService {
   constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
 
-  async register(createUserDto: CreateUserDto) {
+  async signUp(createUserDto: CreateUserDto) {
     try {
       const userExists = await this.userModel.findOne({
         email: createUserDto.email,
