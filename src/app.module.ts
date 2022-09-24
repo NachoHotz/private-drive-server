@@ -8,11 +8,11 @@ import { envConfig } from './config';
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true, load: [envConfig] }),
-    MongooseModule.forRoot(process.env.MONGODB_URI),
+    MongooseModule.forRoot(process.env.NODE_ENV === 'development' ? process.env.MONGO_DEV_URI : process.env.MONGO_PROD_URI),
     FilesModule,
     UsersModule,
   ],
   controllers: [],
   providers: [],
 })
-export class AppModule {}
+export class AppModule { }
