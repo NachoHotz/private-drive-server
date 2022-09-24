@@ -7,7 +7,7 @@ import {
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import bcrypt from 'bcrypt';
-import { CreateUserDto } from './dto/create-user.dto';
+import { CreateUserDto, LoginUserDto } from './dto';
 import { User, UserDocument } from './schemas/user.schema';
 
 @Injectable()
@@ -39,8 +39,10 @@ export class UsersService {
     }
   }
 
-  async login(email: string, password: string) {
+  async login(userInfo: LoginUserDto) {
     try {
+      const { email, password }  = userInfo;
+
       const user = await this.userModel.findOne({ email });
 
       if (!user) {
