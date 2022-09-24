@@ -9,10 +9,14 @@ import { Model } from 'mongoose';
 import bcrypt from 'bcrypt';
 import { CreateUserDto, LoginUserDto } from './dto';
 import { User, UserDocument } from './schemas/user.schema';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class UsersService {
-  constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
+  constructor(
+    @InjectModel(User.name) private userModel: Model<UserDocument>,
+    private readonly jwtService: JwtService,
+  ) {}
 
   async signUp(createUserDto: CreateUserDto) {
     try {
@@ -28,20 +32,24 @@ export class UsersService {
 
       const hashedPassword = await bcrypt.hash(createUserDto.password, 12);
 
-      return await this.userModel.create({
+      const createdUser = await this.userModel.create({
         ...createUserDto,
         password: hashedPassword,
       });
+
+      const access_token = this.jwtService.sign(createdUser);
+
+      return { createdUser, access_token };
     } catch (e) {
       throw new InternalServerErrorException(
-        `Error creating user: ${e.message}`,
+        `Error registering user: ${e.message}`,
       );
     }
   }
 
   async login(userInfo: LoginUserDto) {
     try {
-      const { email, password }  = userInfo;
+      const { email, password } = userInfo;
 
       const user = await this.userModel.findOne({ email });
 
@@ -55,7 +63,9 @@ export class UsersService {
         throw new BadRequestException('Invalid email or password');
       }
 
-      return user;
+      const access_token = this.jwtService.sign(user);
+
+      return { user, access_token };
     } catch (e) {
       throw new InternalServerErrorException(`Error logging in: ${e.message}`);
     }

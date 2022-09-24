@@ -4,5 +4,6 @@ export const envConfig = () => ({
   MONGO_DEV_URI: process.env.MONGO_DEV_URI,
   MONGO_PROD_URI: process.env.MONGO_PROD_URI,
   CLIENT_DEV_URL: process.env.CLIENT_DEV_URL,
-  CLIENT_PROD_URL: process.env.CLIENT_PROD_URL
+  CLIENT_PROD_URL: process.env.CLIENT_PROD_URL,
+  JWT_SECRET: process.env.JWT_SECRET,
 });

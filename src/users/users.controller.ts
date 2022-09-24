@@ -1,8 +1,4 @@
-import {
-  Controller,
-  Post,
-  Body,
-} from '@nestjs/common';
+import { Controller, Post, Body } from '@nestjs/common';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { UsersService } from './users.service';
 import { CreateUserDto, LoginUserDto } from './dto';
@@ -12,9 +8,14 @@ import { CreateUserDto, LoginUserDto } from './dto';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
+  @ApiResponse({
+    status: 200,
+    type: LoginUserDto,
+    description: 'User logged in',
+  })
   @Post('/login')
   async signIn(@Body() userInfo: LoginUserDto) {
-    return this.usersService.login(userInfo);
+    return await this.usersService.login(userInfo);
   }
 
   @ApiResponse({
@@ -24,6 +25,6 @@ export class UsersController {
   })
   @Post('/signUp')
   async signUp(@Body() createUserDto: CreateUserDto) {
-    return this.usersService.signUp(createUserDto);
+    return await this.usersService.signUp(createUserDto);
   }
 }
