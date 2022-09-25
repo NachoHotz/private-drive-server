@@ -1,35 +1,20 @@
 import {
-  BadRequestException,
   Injectable,
   InternalServerErrorException,
-  NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import bcrypt from 'bcrypt';
 import { CreateUserDto, LoginUserDto } from './dto';
 import { User, UserDocument } from './schemas/user.schema';
-import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class UsersService {
-  constructor(
-    @InjectModel(User.name) private userModel: Model<UserDocument>,
-    private readonly jwtService: JwtService,
-  ) {}
+  constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
 
-  async signUp(createUserDto: CreateUserDto) {
+  async create(createUserDto: CreateUserDto) {
     try {
-      const userExists = await this.userModel.findOne({
-        email: createUserDto.email,
-      });
-
-      if (userExists) {
-        throw new BadRequestException(
-          `There is already a user registered with the email ${createUserDto.email}`,
-        );
-      }
-
       const hashedPassword = await bcrypt.hash(createUserDto.password, 12);
 
       const createdUser = await this.userModel.create({
@@ -37,9 +22,7 @@ export class UsersService {
         password: hashedPassword,
       });
 
-      const access_token = this.jwtService.sign(createdUser);
-
-      return { createdUser, access_token };
+      return { createdUser };
     } catch (e) {
       throw new InternalServerErrorException(
         `Error registering user: ${e.message}`,
@@ -47,27 +30,28 @@ export class UsersService {
     }
   }
 
-  async login(userInfo: LoginUserDto) {
+  async findOne(userInfo: LoginUserDto) {
     try {
-      const { email, password } = userInfo;
-
-      const user = await this.userModel.findOne({ email });
+      const user = await this.userModel.findOne({ email: userInfo.email });
 
       if (!user) {
-        throw new NotFoundException('Invalid email or password');
+        throw new UnauthorizedException();
       }
 
-      const isPasswordValid = await bcrypt.compare(password, user.password);
+      const isPasswordValid = await bcrypt.compare(
+        userInfo.password,
+        user.password,
+      );
 
       if (!isPasswordValid) {
-        throw new BadRequestException('Invalid email or password');
+        throw new UnauthorizedException();
       }
 
-      const access_token = this.jwtService.sign(user);
-
-      return { user, access_token };
+      return user;
     } catch (e) {
-      throw new InternalServerErrorException(`Error logging in: ${e.message}`);
+      throw new InternalServerErrorException(
+        `Error finding user: ${e.message}`,
+      );
     }
   }
 }
