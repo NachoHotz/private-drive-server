@@ -16,7 +16,7 @@ export class AuthController {
   @Post('/signUp')
   async signUp(@Body() userCredentials: CreateUserDto) {
     try {
-      return this.authService.signUp(userCredentials);
+      return await this.authService.signUp(userCredentials);
     } catch (e) {
       throw new InternalServerErrorException(`Error signin up: ${e.message}`);
     }
